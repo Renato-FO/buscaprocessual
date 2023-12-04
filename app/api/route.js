@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { executablePath } from 'puppeteer';
-import puppeteer from 'puppeteer-core'
+import puppeteer from 'puppeteer'
 import chrome from 'chrome-aws-lambda'
 import pluginStealth from 'puppeteer-extra-plugin-stealth'
 import path from 'path'
@@ -9,10 +9,11 @@ export async function POST(req) {
     const { proccess } = await req.json()
     const promiseSolved = await new Promise(async (res, rej) => {
         await puppeteer.launch({
-            args: [...chrome.args],
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
             defaultViewport: chrome.defaultViewport,
             executablePath: await chrome.executablePath(),
-            headless: false
+            headless: true,
+            ignoreHTTPSErrors: true,
         }).then(async browser => {
 
             const page = await browser.newPage();
@@ -27,7 +28,7 @@ export async function POST(req) {
             await page.setUserAgent('5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36');
 
 
-            await page.goto('https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam', { waitUntil: "networkidle0" });
+            await page.goto('https://www.google.com/', { waitUntil: "networkidle0" });
 
             await page.type('.value.col-sm-12 input', proccess)
 

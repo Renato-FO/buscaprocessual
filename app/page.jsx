@@ -29,8 +29,10 @@ export default function Home() {
   }
 
   async function getProccess(){
-    
-    const res = await axios.post('/api', {
+    axios.create({
+      baseURL: 'https://buscaprocessual.vercel.app/'
+    })
+    const res = await axios.post('api', {
       proccess
     })
     if(res.data.promiseSolved){

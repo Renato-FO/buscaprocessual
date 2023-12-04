@@ -6,9 +6,15 @@ import path from 'path'
 
 export async function POST(req) {
     const { proccess } = await req.json()
+    console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
-        await puppeteer.connect({
-            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
+        await puppeteer.launch({
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            headless: true,
+            ignoreHTTPSErrors: true,
+            ignoreDefaultArgs: ['--disable-extensions']
         }).then(async browser => {
             const [page] = await browser.pages();
             await page.setViewport({ width: 1280, height: 720 });

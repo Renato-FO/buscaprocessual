@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sparticuz/chromium-min": "^119.0.0",
     "axios": "^1.6.2",
     "chrome-aws-lambda": "^10.1.0",
     "next": "14.0.3",

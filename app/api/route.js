@@ -2,22 +2,21 @@ import { NextResponse } from 'next/server'
 import { executablePath } from 'puppeteer';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import puppeteer from 'puppeteer-extra'
+import chromium from '@sparticuz/chromium-min'
 import path from 'path'
-import chrome from 'chrome-aws-lambda'
 
 export async function POST(req) {
     const { proccess } = await req.json()
     console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
         puppeteer.use(StealthPlugin());
-        const options = {
-            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
-            defaultViewport: chrome.defaultViewport,
-            executablePath: await chrome.executablePath,
-            headless: true,
-            ignoreHTTPSErrors: true,
-        };
-        await puppeteer.launch(options).then(async browser => {
+        await puppeteer.launch({
+            headless: true, executablePath: executablePath(), args: [
+                ...chromium.args,
+                '--disable-web-security',
+                '--lang=en-US,en'
+            ],
+        }).then(async browser => {
             const [page] = await browser.pages();
             await page.setViewport({ width: 1280, height: 720 });
             await page.setExtraHTTPHeaders({

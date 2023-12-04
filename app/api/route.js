@@ -6,7 +6,6 @@ import path from 'path'
 
 export async function POST(req) {
     const { proccess } = await req.json()
-    console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
         await puppeteer.connect({
             browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,

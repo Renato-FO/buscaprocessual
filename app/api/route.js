@@ -1,21 +1,17 @@
 import { NextResponse } from 'next/server'
 import { executablePath } from 'puppeteer';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-import puppeteer from 'puppeteer-extra'
-import chromium from '@sparticuz/chromium-min'
+import puppeteer from 'puppeteer-core'
+import chrome from 'chrome-aws-lambda'
 import path from 'path'
 
 export async function POST(req) {
     const { proccess } = await req.json()
     console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
-        puppeteer.use(StealthPlugin());
         await puppeteer.launch({
-            headless: true, executablePath: executablePath(), args: [
-                ...chromium.args,
-                '--disable-web-security',
-                '--lang=en-US,en'
-            ],
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless
         }).then(async browser => {
             const [page] = await browser.pages();
             await page.setViewport({ width: 1280, height: 720 });
@@ -30,17 +26,17 @@ export async function POST(req) {
 
 
             await page.goto('https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam', { waitUntil: "networkidle0" });
-            console.log('1')
+
             await page.type('.value.col-sm-12 input', proccess)
 
             await page.click('input[type=button]')
-            console.log('2')
+
             await page.waitForSelector('.btn.btn-default.btn-sm').then(async el => {
                 const onclickValue = await page.$eval('.btn.btn-default.btn-sm', (linkElement) => {
                     // Se o elemento <a> for encontrado, retorne o valor do atributo onclick
                     return linkElement ? linkElement.getAttribute('onclick') : null;
                 });
-                console.log('3')
+
                 const regex = /openPopUp\('.*?','(.*?)'\)/;
                 const match = onclickValue.match(regex);
 
@@ -85,7 +81,7 @@ export async function POST(req) {
 
                 const objetoDadosSextoElemento = await extrairDadosElemento('#j_id131\\:processoTrfViewView\\:j_id208');
                 dadosElementos.push(objetoDadosSextoElemento);
-                console.log('4')
+
                 res(dadosElementos)
             })
         })

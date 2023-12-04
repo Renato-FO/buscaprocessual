@@ -13,7 +13,8 @@ export async function POST(req) {
             defaultViewport: chrome.defaultViewport,
             executablePath: await chrome.executablePath,
             headless: true,
-            ignoreHTTPSErrors: true
+            ignoreHTTPSErrors: true,
+            ignoreDefaultArgs: ['--disable-extensions']
         }).then(async browser => {
             const [page] = await browser.pages();
             await page.setViewport({ width: 1280, height: 720 });

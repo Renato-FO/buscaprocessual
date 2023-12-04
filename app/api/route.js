@@ -12,7 +12,7 @@ export async function POST(req) {
             args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--disable-http2'],
             defaultViewport: chrome.defaultViewport,
             executablePath: await chrome.executablePath,
-            headless: true,
+            headless: false,
             ignoreHTTPSErrors: true,
         }).then(async browser => {
 

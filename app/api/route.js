@@ -1,16 +1,22 @@
 import { NextResponse } from 'next/server'
 import { executablePath } from 'puppeteer';
 import puppeteer from 'puppeteer-core'
-import chrome from 'chrome-aws-lambda'
+import chrome from '@sparticuz/chromium'
 import path from 'path'
 
 export async function POST(req) {
     const { proccess } = await req.json()
     const promiseSolved = await new Promise(async (res, rej) => {
-        await puppeteer.connect({
-            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
+        await puppeteer.launch({
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            headless: true,
+            ignoreHTTPSErrors: true,
+            ignoreDefaultArgs: ['--disable-extensions']
         }).then(async browser => {
-            const [page] = await browser.pages();
+
+            const page = await browser.newPage();
             await page.setViewport({ width: 1280, height: 720 });
             await page.setExtraHTTPHeaders({
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',

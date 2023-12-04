@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { executablePath } from 'puppeteer';
 import puppeteer from 'puppeteer-core'
-import chrome from '@sparticuz/chromium'
+import chrome from 'chrome-aws-lambda'
 import pluginStealth from 'puppeteer-extra-plugin-stealth'
 import path from 'path'
 

@@ -3,21 +3,21 @@ import { executablePath } from 'puppeteer';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import puppeteer from 'puppeteer-extra'
 import path from 'path'
+import chrome from 'chrome-aws-lambda'
 
 export async function POST(req) {
     const { proccess } = await req.json()
     console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
         puppeteer.use(StealthPlugin());
-        // await puppeteer.launch({
-        //     headless: true, executablePath: executablePath(), args: [
-        //         '--disable-web-security',
-        //         '--lang=en-US,en'
-        //     ],
-        // })
-        await puppeteer.connect({
-            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
-        }).then(async browser => {
+        const options = {
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            headless: true,
+            ignoreHTTPSErrors: true,
+        };
+        await puppeteer.launch(options).then(async browser => {
             const [page] = await browser.pages();
             await page.setViewport({ width: 1280, height: 720 });
             await page.setExtraHTTPHeaders({

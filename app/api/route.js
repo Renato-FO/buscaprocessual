@@ -7,15 +7,14 @@ import path from 'path'
 
 export async function POST(req) {
     const { proccess } = await req.json()
-    puppeteer.use(pluginStealth());
     const promiseSolved = await new Promise(async (res, rej) => {
         await puppeteer.launch({
-            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
+            args: [...chrome.args, '--disable-web-security',
+                '--lang=en-US,en'],
             defaultViewport: chrome.defaultViewport,
             executablePath: await chrome.executablePath(),
             headless: true,
-            ignoreHTTPSErrors: true,
-            ignoreDefaultArgs: ['--disable-extensions']
+            ignoreHTTPSErrors: true
         }).then(async browser => {
 
             const page = await browser.newPage();

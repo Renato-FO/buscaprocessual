@@ -10,7 +10,7 @@ export async function POST(req) {
         await puppeteer.launch({
             args: ["--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
             defaultViewport: chrome.defaultViewport,
-            executablePath: await chrome.executablePath,
+            executablePath: await chrome.executablePath(),
             headless: true,
             ignoreHTTPSErrors: true,
             ignoreDefaultArgs: ['--disable-extensions']

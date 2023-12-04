@@ -9,6 +9,9 @@ export async function POST(req) {
     console.log(proccess)
     const promiseSolved = await new Promise(async (res, rej) => {
         puppeteer.use(StealthPlugin());
+        await puppeteer.connect({
+            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BLESS_TOKEN}`,
+        })
         await puppeteer.launch({
             headless: true, executablePath: executablePath(), args: [
                 '--disable-web-security',

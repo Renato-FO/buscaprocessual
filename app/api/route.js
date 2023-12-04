@@ -9,7 +9,7 @@ export async function POST(req) {
     const { proccess } = await req.json()
     const promiseSolved = await new Promise(async (res, rej) => {
         await puppeteer.launch({
-            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--disable-http2'],
             defaultViewport: chrome.defaultViewport,
             executablePath: await chrome.executablePath(),
             headless: true,
